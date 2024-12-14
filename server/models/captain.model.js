@@ -37,7 +37,7 @@ const captainSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["active", "inactive"],
-    default: "inactive",
+    default: "active",
   },
   vehicle: {
     color: {
@@ -78,15 +78,16 @@ captainSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-captainSchema.methods.comparePassword = async function (password) {
+
+captainSchema.methods.comparePassword = async function(password){
   return await bcrypt.compare(password, this.password);
-};
+}
 
-captainSchema.statics.hashPassword = async function (password) {
+captainSchema.statics.hashPassword = async function (password){
   return await bcrypt.hash(password, 10);
-};
+}
 
-// Capitalized model name for convention
-const Captain = mongoose.model("Captain", captainSchema);
 
-module.exports = Captain;
+const captainModel = mongoose.model('captain', captainSchema)
+
+module.exports = captainModel;
