@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserDataContext } from "../context/UserContext";
+import axios from "axios";
 
 const UserSignup = () => {
   const [email, setEmail] = useState("");
@@ -8,18 +10,44 @@ const UserSignup = () => {
   const [lastName, setlastName] = useState("");
   const [userData, setUserData] = useState({});
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+
+  const { user, setUser } = React.useContext(UserDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
-      email: email,
-      password: password,
+
+    // setUserData({
+    //   email: email,
+    //   password: password,
+    //   fullName: {
+    //     firstName: firstName,
+    //     lastName: lastName,
+    //   },
+    // });
+
+    // console.log(userData);
+
+    const newUser = {
       fullName: {
         firstName: firstName,
         lastName: lastName,
       },
-    });
+      email: email,
+      password: password,
+    };
 
-    // console.log(userData);
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/users/register`,
+      newUser
+    );
+
+    if (response.status == 201) {
+      const data = response.data;
+      setUser(data.user);
+
+      navigate("/home");
+    }
 
     setfirstName("");
     setlastName("");
@@ -93,7 +121,7 @@ const UserSignup = () => {
             type="submit"
             className="bg-black text-white font-semibold mb-4 rounded px-4 py-2 w-full text-lg hover:bg-gray-800 transition duration-300"
           >
-            Register
+            Create Account
           </button>
 
           <p className="text-center text-gray-600 mb-20 ">
